@@ -1,3 +1,4 @@
+console.log("🧪 RAPIDAPI_KEY:", process.env.RAPIDAPI_KEY);
 export default async function handler(req, res) {
   const response = await fetch(
     "https://aircraftscatter.p.rapidapi.com/lat/38.7223/lon/-9.1393/",
@@ -17,4 +18,3 @@ export default async function handler(req, res) {
   const data = await response.json();
   res.status(200).json(data);
 }
-console.log("Chave recebida do Vercel:", process.env.RAPIDAPI_KEY);

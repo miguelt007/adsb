@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // <- permite qualquer origem
+  // Permitir acesso de qualquer origem
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   const lat = 38.7223;  // Lisboa
   const lon = -9.1393;
@@ -14,9 +16,9 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-
     res.status(200).json(data);
   } catch (error) {
+    console.error("Erro:", error);
     res.status(500).json({ error: "Erro ao buscar aeronaves" });
   }
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Aeronaves sobre Lisboa</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    body { margin:0; font-family:sans-serif; display:flex; height:100vh; }
+    #map { width:70%; height:100%; }
+    #sidebar { width:30%; padding:1rem; background:#f5f5f5; overflow-y:auto; }
+    .aircraft { margin-bottom:1rem; padding:0.5rem; background:#fff; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="sidebar">
+    <h2>Aeronaves em Lisboa</h2>
+    <div id="aircraft-list">Carregando...</div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([38.7223, -9.1393], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    fetch('/api/aircraft')
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById('aircraft-list');
+        list.innerHTML = '';
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(ac => {
+            const lat = ac.lat || 38.72;
+            const lon = ac.lon || -9.14;
+            const callsign = ac.callsign || "Sem callsign";
+            const alt = ac.altitude || "N/A";
+            const speed = ac.speed || "N/A";
+
+            L.marker([lat, lon]).addTo(map)
+              .bindPopup(`<strong>${callsign}</strong><br>Alt: ${alt} ft<br>Vel: ${speed} kt`);
+
+            const div = document.createElement('div');
+            div.className = "aircraft";
+            div.innerHTML = `<strong>${callsign}</strong><br>Alt: ${alt} ft<br>Vel: ${speed} kt`;
+            list.appendChild(div);
+          });
+        } else {
+          list.innerHTML = '<p>Nenhuma aeronave detectada.</p>';
+        }
+      })
+      .catch(err => {
+        document.getElementById("aircraft-list").textContent = "Erro ao carregar aeronaves.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>

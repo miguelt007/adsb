@@ -25,7 +25,7 @@
 
     async function carregarAeronaves() {
       try {
-        const resposta = await fetch('/api/aircraft');
+        const resposta = await fetch('https://adsb-delta.vercel.app/api/aircraft');
         const aeronaves = await resposta.json();
 
         aeronaves.forEach(aeronave => {
